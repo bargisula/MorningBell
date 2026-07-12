@@ -27,6 +27,7 @@
   <button class="tab active" data-tab="brief">今日晨報</button>
   <button class="tab" data-tab="checkup">個股健檢</button>
   <button class="tab" data-tab="watchlist">觀察清單</button>
+  <button class="tab" data-tab="about">運作原理</button>
 </nav>
 
 <main>
@@ -53,6 +54,58 @@
     </form>
     <div id="watch-list"><div class="loading">載入中⋯</div></div>
     <p class="hint">加進清單的股票，每天的晨報會自動幫你盯著。</p>
+  </section>
+
+  <section id="panel-about" class="panel">
+    <div class="section-label">資料從哪裡來</div>
+    <div class="card about-card">
+      <p>所有行情與財務數據來自 <strong>Yahoo Finance 的免費公開資料</strong>（透過 yfinance 取得），報價約有 15 分鐘延遲。</p>
+      <ul>
+        <li>價格類資料每 <strong>10 分鐘</strong>更新一次</li>
+        <li>財務基本面資料每 <strong>12 小時</strong>更新一次</li>
+        <li>資料抓取失敗時會<strong>直接顯示錯誤</strong>，不會默默給你舊數據</li>
+      </ul>
+      <p>所有資料只存在你自己的電腦上，觀察清單不會上傳到任何地方。</p>
+    </div>
+
+    <div class="section-label">市場晨燈怎麼判斷</div>
+    <div class="card about-card">
+      <p>晨燈只看兩個公開、講得清楚的指標：</p>
+      <ul>
+        <li><strong>趨勢</strong>：S&amp;P 500（用 SPY 代表）是否站在 200 日移動平均線之上——這是市場常用的長期多空分界</li>
+        <li><strong>情緒</strong>：VIX 恐慌指數的高低——低於 20 算平穩，高於 25 算緊張</li>
+      </ul>
+      <table class="rule-table">
+        <tr><td>🟢 綠燈</td><td>趨勢線之上，且 VIX &lt; 20</td></tr>
+        <tr><td>🔴 紅燈</td><td>趨勢線之下，且 VIX &gt; 25</td></tr>
+        <tr><td>🟡 黃燈</td><td>其餘情況（兩個訊號不一致）</td></tr>
+      </table>
+      <p class="hint">這是刻意簡化的規則，目的是「講得清楚」而不是「預測市場」。燈號描述的是現在的狀態，不是對未來的判斷。</p>
+    </div>
+
+    <div class="section-label">個股健檢怎麼評分</div>
+    <div class="card about-card">
+      <p><strong>貴不貴</strong>——用本益比（股價 ÷ 每股獲利）分級：15 倍以下不算貴、15–25 合理、25–40 偏貴、40 以上非常貴。虧損中的公司無法用本益比，改看股價營收比。</p>
+      <p><strong>體質好不好</strong>——五項體檢，每項有講得出口的門檻：淨利率 &gt; 10%、股東權益報酬率 &gt; 15%、營收年成長 &gt; 5%、自由現金流為正、負債低於自有資金。</p>
+      <p><strong>有沒有紅旗</strong>——逐項檢查：虧損、營收衰退、高負債（&gt; 200%）、現金流為負、極高本益比（&gt; 60）、股價位於一年低檔。</p>
+      <p class="hint">門檻是通用的粗略標準，不同產業的合理值不同（例如銀行的負債結構天生不同）。健檢是「快速體檢」，不是完整的研究報告。</p>
+    </div>
+
+    <div class="section-label">技術架構</div>
+    <div class="card about-card">
+      <ul>
+        <li><strong>後端</strong>：Python + FastAPI，所有市場資料收斂在單一資料層（services/market.py）</li>
+        <li><strong>前端</strong>：純 HTML / CSS / JavaScript，無框架</li>
+        <li><strong>儲存</strong>：SQLite 單一檔案（data/ 資料夾），只存你的觀察清單</li>
+        <li><strong>AI 導讀（選配）</strong>：設定 ANTHROPIC_API_KEY 後啟用，把當日數據交給 Claude 改寫成口語導讀；沒設定則使用內建模板文案，功能不受影響</li>
+        <li><strong>開源</strong>：MIT 授權，程式碼全部公開可檢視</li>
+      </ul>
+    </div>
+
+    <div class="section-label">局限與免責</div>
+    <div class="card about-card">
+      <p>晨鐘做的事情只有一件：<strong>把公開數據翻譯成人話</strong>。它不預測市場、不推薦標的、不知道你的財務狀況。所有燈號、評語與導讀僅為資訊整理，不構成投資建議，投資決策請自行判斷並自負盈虧。</p>
+    </div>
   </section>
 </main>
 

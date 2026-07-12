@@ -18,18 +18,19 @@ def market_light() -> dict:
 
     vix, _, _ = market.last_close("^VIX")
 
+    # 文案原則：忠實描述市場狀態，不給行動指示、不揣測使用者的計畫
     if trend_up and vix < 20:
-        color, title = GREEN, "一切正常"
-        reason = "大盤站在長期趨勢線之上，市場情緒平穩。照你原本的計畫走就好。"
+        color, title = GREEN, "市場平穩"
+        reason = "大盤站在長期趨勢線之上，市場情緒平穩。"
     elif not trend_up and vix > 25:
-        color, title = RED, "小心行事"
-        reason = "大盤跌破長期趨勢線，而且市場明顯緊張。這種時候先別急著加碼，看清楚再說。"
+        color, title = RED, "市場緊張"
+        reason = "大盤跌破長期趨勢線，且恐慌指數處於偏高水位。"
     else:
-        color, title = YELLOW, "保持觀望"
+        color, title = YELLOW, "訊號分歧"
         if not trend_up:
-            reason = "大盤跌到長期趨勢線之下，但市場還沒到恐慌的程度。多留意、少動作。"
+            reason = "大盤位於長期趨勢線之下，但市場情緒尚未明顯緊張。"
         else:
-            reason = "大盤趨勢還在，但市場情緒偏緊張。不用慌，但別追高。"
+            reason = "大盤仍在長期趨勢線之上，但市場情緒偏向緊張。"
 
     return {
         "color": color,

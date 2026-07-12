@@ -27,7 +27,7 @@ def _valuation_card(info: dict, price: float, pos52: float | None) -> dict:
         elif pe < 40:
             grade = {"emoji": "😰", "headline": "偏貴，市場已經給了很高的期待"}
         else:
-            grade = {"emoji": "🥵", "headline": "很貴，買的是對未來的信仰"}
+            grade = {"emoji": "🥵", "headline": "非常貴，價格已計入極高的期待"}
     else:
         grade = {"emoji": "🤔", "headline": "公司目前沒賺錢或無本益比，不能用一般標準看貴俗"}
         ps = info.get("priceToSalesTrailing12Months")
@@ -109,16 +109,16 @@ def _flags_card(info: dict, pos52: float | None) -> dict:
         flags.append("自由現金流為負，帳面之外實際在燒錢")
     pe = info.get("trailingPE")
     if pe and pe > 60:
-        flags.append(f"本益比高達 {pe:.0f}，期待落空時跌得會很痛")
+        flags.append(f"本益比高達 {pe:.0f}，價格已計入非常高的成長期待")
     if pos52 is not None and pos52 < 0.30:
-        flags.append("股價躺在一年區間的低檔，市場可能知道些什麼")
+        flags.append("股價位於過去一年價格區間的低檔（不到 30% 高度）")
 
     if not flags:
         grade = {"emoji": "✅", "headline": "沒有明顯紅旗"}
     elif len(flags) <= 2:
-        grade = {"emoji": "⚠️", "headline": f"有 {len(flags)} 面紅旗，看清楚再說"}
+        grade = {"emoji": "⚠️", "headline": f"有 {len(flags)} 面紅旗"}
     else:
-        grade = {"emoji": "🚩", "headline": f"紅旗多達 {len(flags)} 面，新手先避開"}
+        grade = {"emoji": "🚩", "headline": f"紅旗多達 {len(flags)} 面"}
     return {**grade, "items": flags}
 
 

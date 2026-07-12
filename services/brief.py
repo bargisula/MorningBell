@@ -37,14 +37,14 @@ def _headline(rows: list[dict]) -> str:
 
 def _watch_note(pct: float, pos52: float | None) -> str:
     if pct >= 3:
-        return f"大漲 {pct:.1f}%，值得點進健檢看看發生什麼事"
+        return f"單日大漲 {pct:.1f}%，波動明顯大於平常，可到「個股健檢」看基本面數據"
     if pct <= -3:
-        return f"大跌 {abs(pct):.1f}%，先別慌，去健檢確認體質有沒有變"
+        return f"單日大跌 {abs(pct):.1f}%，波動明顯大於平常，可到「個股健檢」看基本面數據"
     if pos52 is not None and pos52 >= 0.97:
-        return "貼近 52 週最高點，市場對它很樂觀"
+        return "股價貼近 52 週最高點"
     if pos52 is not None and pos52 <= 0.05:
-        return "貼近 52 週最低點，市場對它很悲觀"
-    return "今天平穩，沒什麼特別的事"
+        return "股價貼近 52 週最低點"
+    return "價格平穩，沒有明顯波動"
 
 
 def _watchlist_section() -> list[dict]:
