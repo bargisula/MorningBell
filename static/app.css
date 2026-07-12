@@ -1,0 +1,189 @@
+/* 晨鐘 MorningBell — 「破曉」視覺
+   晨曦深藍（天將亮）× 冷調晨白 × 銅鐘琥珀。 */
+:root {
+  --paper: #f3f6fa;
+  --card: #ffffff;
+  --ink: #16243a;
+  --muted: #5c6c83;
+  --border: #e1e8f1;
+  --brass: #a97b24;
+  --brass-soft: #f6edda;
+  --green: #1f8a5d;
+  --amber: #d0900f;
+  --red: #c4483a;
+  --serif: "Noto Serif TC", "PingFang TC", serif;
+  --sans: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background:
+    linear-gradient(180deg, #e8eef6 0%, var(--paper) 220px);
+  color: var(--ink);
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+  line-height: 1.75;
+}
+
+/* ── 報頭 ─────────────────────────── */
+.masthead { text-align: center; margin-bottom: 22px; }
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: var(--ink);
+}
+.bell { width: 30px; height: 30px; color: var(--brass); }
+.brand h1 {
+  font-family: var(--serif);
+  font-size: 1.9rem; font-weight: 700; letter-spacing: .06em;
+}
+.brand .latin {
+  font-size: .95rem; font-weight: 600; letter-spacing: .14em;
+  color: var(--brass); vertical-align: middle; margin-left: 2px;
+}
+.tagline { color: var(--muted); font-size: .92rem; letter-spacing: .18em; margin-top: 2px; }
+
+/* ── 分頁 ─────────────────────────── */
+.tabs {
+  display: flex; justify-content: center; gap: 4px;
+  border-bottom: 1px solid var(--border); margin-bottom: 24px;
+}
+.tab {
+  font-family: var(--sans); font-size: 1rem; color: var(--muted);
+  background: none; border: none; padding: 10px 18px 12px; cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.tab.active { color: var(--ink); font-weight: 600; border-bottom-color: var(--brass); }
+.tab:hover { color: var(--ink); }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── 晨報 ─────────────────────────── */
+.brief-date {
+  font-family: var(--serif); text-align: center;
+  color: var(--muted); font-size: .95rem; margin-bottom: 6px;
+}
+.stale-note, .market-note {
+  text-align: center; font-size: .88rem; color: var(--muted); margin-bottom: 14px;
+}
+.stale-note { color: var(--red); }
+
+.section-label {
+  font-size: .8rem; letter-spacing: .3em; color: var(--brass);
+  margin: 26px 0 10px; display: flex; align-items: center; gap: 10px;
+}
+.section-label::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px; margin-bottom: 10px;
+}
+
+/* 招牌：市場晨燈 */
+.lamp-card { display: flex; align-items: center; gap: 18px; }
+.lamp {
+  flex: 0 0 54px; width: 54px; height: 54px; border-radius: 50%;
+  animation: breathe 3.2s ease-in-out infinite;
+}
+.lamp.green  { background: var(--green);  box-shadow: 0 0 0 8px rgba(31,138,93,.12); }
+.lamp.yellow { background: var(--amber);  box-shadow: 0 0 0 8px rgba(208,144,15,.14); }
+.lamp.red    { background: var(--red);    box-shadow: 0 0 0 8px rgba(196,72,58,.14); }
+.lamp.unknown{ background: var(--muted);  box-shadow: 0 0 0 8px rgba(92,108,131,.12); }
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) { .lamp { animation: none; } }
+.lamp-title { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; }
+.lamp-reason { color: var(--muted); font-size: .95rem; }
+.lamp-detail { font-size: .82rem; color: var(--muted); margin-top: 6px; }
+
+.headline { font-family: var(--serif); font-size: 1.08rem; margin-bottom: 12px; }
+
+.index-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+.index-row:last-child { border-bottom: none; }
+.idx-name { color: var(--ink); }
+.idx-close { color: var(--muted); font-variant-numeric: tabular-nums; margin-left: auto; margin-right: 14px; }
+
+.pct { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 74px; text-align: right; }
+.pct.up { color: var(--green); }
+.pct.down { color: var(--red); }
+.pct.flat { color: var(--muted); }
+
+.watch-row { display: flex; align-items: baseline; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--border); flex-wrap: wrap; }
+.watch-row:last-child { border-bottom: none; }
+.watch-ticker { font-weight: 700; }
+.watch-name { color: var(--muted); font-size: .88rem; }
+.watch-note { width: 100%; font-size: .9rem; color: var(--muted); }
+
+.ai-block {
+  background: var(--brass-soft); border: 1px solid #eadfc4;
+  border-radius: 10px; padding: 16px 18px; margin-top: 8px;
+  font-size: .98rem;
+}
+.ai-tag { font-size: .78rem; letter-spacing: .2em; color: var(--brass); display: block; margin-bottom: 6px; }
+
+.empty { color: var(--muted); font-size: .93rem; }
+
+/* ── 表單 ─────────────────────────── */
+.ticker-form { display: flex; gap: 8px; margin-bottom: 18px; }
+.ticker-form input {
+  flex: 1; font-size: 1rem; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--card); color: var(--ink);
+  text-transform: uppercase;
+}
+.ticker-form input:focus { outline: 2px solid var(--brass); outline-offset: 1px; border-color: transparent; }
+.ticker-form button {
+  font-size: .95rem; padding: 10px 18px; border: none; border-radius: 8px;
+  background: var(--ink); color: #fff; cursor: pointer; white-space: nowrap;
+}
+.ticker-form button:hover { background: #23375a; }
+.ticker-form button:disabled { opacity: .5; cursor: wait; }
+
+/* ── 健檢卡 ───────────────────────── */
+.stock-head { margin-bottom: 14px; }
+.stock-head .price { font-variant-numeric: tabular-nums; color: var(--muted); margin-left: 8px; }
+.check-card .emoji { font-size: 1.4rem; margin-right: 8px; }
+.check-card .card-title { font-size: .8rem; letter-spacing: .25em; color: var(--brass); margin-bottom: 6px; }
+.check-card .verdict { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; }
+.check-card details { margin-top: 10px; }
+.check-card summary { cursor: pointer; font-size: .88rem; color: var(--muted); }
+.detail-row { display: flex; gap: 10px; padding: 6px 0; font-size: .92rem; border-bottom: 1px dashed var(--border); }
+.detail-row:last-child { border-bottom: none; }
+.detail-label { flex: 0 0 90px; color: var(--muted); }
+.detail-value { flex: 0 0 64px; font-variant-numeric: tabular-nums; font-weight: 600; }
+.detail-note { color: var(--muted); }
+.check-pass { color: var(--green); }
+.check-fail { color: var(--red); }
+.flag-item { padding: 4px 0; font-size: .95rem; }
+.disclaimer { font-size: .82rem; color: var(--muted); margin-top: 12px; }
+
+/* ── 清單 ─────────────────────────── */
+.wl-row { display: flex; align-items: center; gap: 12px; padding: 10px 4px; border-bottom: 1px solid var(--border); }
+.wl-row button {
+  margin-left: auto; background: none; border: 1px solid var(--border);
+  border-radius: 6px; color: var(--muted); padding: 3px 10px; cursor: pointer; font-size: .85rem;
+}
+.wl-row button:hover { color: var(--red); border-color: var(--red); }
+
+/* ── 通用 ─────────────────────────── */
+.loading { text-align: center; color: var(--muted); padding: 40px 0; }
+.error-box {
+  background: #fdf1ef; border: 1px solid #f0cdc8; color: var(--red);
+  border-radius: 8px; padding: 12px 16px; margin: 10px 0; font-size: .93rem;
+}
+.hint { color: var(--muted); font-size: .9rem; }
+
+footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: .82rem; }
+footer .foot-brand { font-family: var(--serif); letter-spacing: .1em; margin-top: 6px; }
+
+@media (max-width: 480px) {
+  body { padding: 20px 12px 50px; }
+  .brand h1 { font-size: 1.55rem; }
+  .tab { padding: 8px 12px 10px; font-size: .93rem; }
+  .detail-label { flex-basis: 76px; }
+}

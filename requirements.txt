@@ -1,0 +1,7 @@
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+yfinance>=0.2.38
+pandas>=2.0.0
+
+# 選配：AI 白話解讀（沒裝也能用，只是少了 AI 導讀）
+anthropic>=0.40.0
