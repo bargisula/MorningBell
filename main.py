@@ -23,3 +23,9 @@ app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 @app.get("/", include_in_schema=False)
 def index():
     return FileResponse(ROOT / "static" / "index.html")
+
+
+@app.get("/sw.js", include_in_schema=False)
+def service_worker():
+    # SW 需由根路徑供應，scope 才能涵蓋整站
+    return FileResponse(ROOT / "static" / "sw.js", media_type="application/javascript")
