@@ -47,9 +47,24 @@ def _watch_note(pct: float, pos52: float | None) -> str:
     return "價格平穩，沒有明顯波動"
 
 
-def _watchlist_section() -> list[dict]:
+def _resolve_rows(tickers: list[str] | None) -> list[dict]:
+    """本機模式讀 SQLite；Demo 模式由前端把訪客瀏覽器裡的清單帶進來。"""
+    if tickers is None:
+        return db.watchlist()
+    rows = []
+    for t in tickers[:20]:
+        try:
+            info = market.info(t)
+            name = info.get("longName") or info.get("shortName") or t
+        except market.DataUnavailable:
+            name = t
+        rows.append({"ticker": t, "name": name})
+    return rows
+
+
+def _watchlist_section(rows: list[dict]) -> list[dict]:
     items = []
-    for row in db.watchlist():
+    for row in rows:
         t = row["ticker"]
         try:
             price, pct, _ = market.last_close(t)
@@ -71,10 +86,10 @@ def _watchlist_section() -> list[dict]:
     return items
 
 
-def _events_section() -> list[dict]:
+def _events_section(rows: list[dict]) -> list[dict]:
     events = []
     horizon = date.today() + timedelta(days=10)
-    for row in db.watchlist():
+    for row in rows:
         d = market.next_earnings_date(row["ticker"])
         if d is None:
             continue
@@ -89,8 +104,9 @@ def _events_section() -> list[dict]:
     return sorted(events, key=lambda e: e["date"])
 
 
-def daily_brief() -> dict:
+def daily_brief(tickers: list[str] | None = None) -> dict:
     today = date.today()
+    rows = _resolve_rows(tickers)
 
     indices, trade_date = [], None
     for symbol, name in INDICES:
@@ -119,8 +135,8 @@ def daily_brief() -> dict:
         "headline": _headline(indices),
         "indices": indices,
         "light": light_data,
-        "watchlist": _watchlist_section(),
-        "events": _events_section(),
+        "watchlist": _watchlist_section(rows),
+        "events": _events_section(rows),
     }
     brief["ai_narrative"] = ai.narrative(brief)
     brief["ai_enabled"] = ai.enabled()

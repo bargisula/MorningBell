@@ -16,6 +16,19 @@ function pctSpan(pct) {
   return `<span class="pct ${cls}">${sign}${pct.toFixed(2)}%</span>`;
 }
 
+/* Demo 模式：清單存在訪客自己的瀏覽器（localStorage），不經過伺服器 */
+let DEMO = false;
+
+const store = {
+  KEY: "morningbell.watchlist",
+  read() {
+    try { return JSON.parse(localStorage.getItem(this.KEY)) || []; }
+    catch (_) { return []; }
+  },
+  write(list) { localStorage.setItem(this.KEY, JSON.stringify(list)); },
+  tickers() { return this.read().map((w) => w.ticker); },
+};
+
 async function api(path, options) {
   const res = await fetch(path, options);
   if (!res.ok) {
@@ -99,7 +112,11 @@ function renderBrief(b) {
 
 async function loadBrief() {
   try {
-    renderBrief(await api("/api/brief"));
+    let path = "/api/brief";
+    if (DEMO && store.tickers().length) {
+      path += "?tickers=" + encodeURIComponent(store.tickers().join(","));
+    }
+    renderBrief(await api(path));
   } catch (err) {
     $("#panel-brief").innerHTML =
       `<div class="error-box">晨報載入失敗：${esc(err.message)}<br>請確認網路後重新整理頁面。</div>`;
@@ -167,23 +184,30 @@ $("#checkup-form").addEventListener("submit", async (e) => {
 });
 
 /* ── 觀察清單 ─────────────────────── */
+function renderWatchlist(list) {
+  $("#watch-list").innerHTML = list.length
+    ? list.map((w) => `
+        <div class="wl-row">
+          <strong>${esc(w.ticker)}</strong>
+          <span class="watch-name">${esc(w.name || "")}</span>
+          <button data-ticker="${esc(w.ticker)}">移除</button>
+        </div>`).join("")
+    : `<p class="empty">清單是空的。加入第一支你關心的股票吧。</p>`;
+  document.querySelectorAll(".wl-row button").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (DEMO) {
+        store.write(store.read().filter((w) => w.ticker !== btn.dataset.ticker));
+      } else {
+        await api(`/api/watchlist/${btn.dataset.ticker}`, { method: "DELETE" });
+      }
+      loadWatchlist();
+    });
+  });
+}
+
 async function loadWatchlist() {
   try {
-    const list = await api("/api/watchlist");
-    $("#watch-list").innerHTML = list.length
-      ? list.map((w) => `
-          <div class="wl-row">
-            <strong>${esc(w.ticker)}</strong>
-            <span class="watch-name">${esc(w.name || "")}</span>
-            <button data-ticker="${esc(w.ticker)}">移除</button>
-          </div>`).join("")
-      : `<p class="empty">清單是空的。加入第一支你關心的股票吧。</p>`;
-    document.querySelectorAll(".wl-row button").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        await api(`/api/watchlist/${btn.dataset.ticker}`, { method: "DELETE" });
-        loadWatchlist();
-      });
-    });
+    renderWatchlist(DEMO ? store.read() : await api("/api/watchlist"));
   } catch (err) {
     $("#watch-list").innerHTML = `<div class="error-box">${esc(err.message)}</div>`;
   }
@@ -197,11 +221,18 @@ $("#watch-form").addEventListener("submit", async (e) => {
   const btn = e.target.querySelector("button");
   btn.disabled = true;
   try {
-    await api("/api/watchlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ticker }),
-    });
+    if (DEMO) {
+      const found = await api(`/api/lookup/${encodeURIComponent(ticker)}`);
+      const list = store.read().filter((w) => w.ticker !== found.ticker);
+      list.push(found);
+      store.write(list);
+    } else {
+      await api("/api/watchlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ticker }),
+      });
+    }
     input.value = "";
     loadWatchlist();
   } catch (err) {
@@ -213,8 +244,18 @@ $("#watch-form").addEventListener("submit", async (e) => {
   }
 });
 
-loadBrief();
-loadWatchlist();
+/* ── 啟動 ─────────────────────────── */
+(async () => {
+  try {
+    DEMO = (await api("/api/config")).demo === true;
+  } catch (_) { /* config 拿不到就當本機模式 */ }
+  if (DEMO) {
+    $("#panel-watchlist .hint").textContent =
+      "清單存在你這台裝置的瀏覽器裡，不會上傳，也只有你看得到。";
+  }
+  loadBrief();
+  loadWatchlist();
+})();
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js", { scope: "/" })

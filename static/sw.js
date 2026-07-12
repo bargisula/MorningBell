@@ -3,11 +3,11 @@
    寧可顯示錯誤，也不給你舊行情。 */
 "use strict";
 
-const CACHE = "morningbell-v1";
+const CACHE = "morningbell-v2";
 const SHELL = [
   "/",
-  "/static/app.css",
-  "/static/app.js",
+  "/static/app.css?v=2",
+  "/static/app.js?v=2",
   "/static/manifest.webmanifest",
   "/static/icons/icon-192.png",
   "/static/icons/icon-512.png",

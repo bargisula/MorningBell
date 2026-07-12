@@ -10,3 +10,6 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.7
+      # Demo 模式：觀察清單存訪客自己的瀏覽器，伺服器不落地任何用戶資料
+      - key: MORNINGBELL_DEMO
+        value: "1"
