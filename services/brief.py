@@ -112,7 +112,8 @@ def daily_brief() -> dict:
         "date": today.isoformat(),
         "date_label": f"{today.month} 月 {today.day} 日 星期{WEEKDAYS[today.weekday()]}",
         "trade_date": trade_date.isoformat() if trade_date else None,
-        "is_stale": bool(trade_date and (today - trade_date).days >= 2),
+        # 週五收盤到週一開盤前相隔 3 天都算正常，超過才視為資料過期
+        "is_stale": bool(trade_date and (today - trade_date).days > 3),
         "market_note": "美股週末休市，以下是最近一個交易日的收盤情況。"
         if today.weekday() >= 5 else None,
         "headline": _headline(indices),
