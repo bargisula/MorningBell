@@ -1,0 +1,12 @@
+# Render 部署藍圖 — Demo 站
+# 用法：Render 後台 New → Blueprint → 選這個 repo，全自動建好
+services:
+  - type: web
+    name: morningbell
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
