@@ -51,8 +51,8 @@
 **Mac / Linux：**
 
 ```bash
-git clone https://github.com/bargisula/morningbell.git
-cd morningbell
+git clone https://github.com/bargisula/MorningBell.git
+cd MorningBell
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --port 8888
